@@ -1,0 +1,12 @@
+fastapi[standard]
+python-multipart
+pymupdf
+langchain
+langchain-core
+langchain-community
+langchain-text-splitters
+pypdf
+sentence-transformers
+chromadb
+groq
+pymongo
