@@ -4,9 +4,10 @@ __pycache__/
 build/
 dist/
 uploads/
-chroma-db/
+chroma_db/
 wheels/
 *.egg-info
 
 # Virtual environments
 .venv
+.env
