@@ -6,6 +6,7 @@ from rag.chunker import chunk_text
 from rag.vector_store import *
 from langchain_community.vectorstores import Chroma
 from services.llm_service import generate_answer
+from database import chat_collection
 
 
 app = FastAPI()
@@ -92,7 +93,23 @@ def ask_question(question: str):
 
     answer = generate_answer(context, question)
 
+    chat_collection.insert_one({
+        "question": question,
+        "answer": answer
+    })
+
     return {
         "question": question,
         "answer": answer
+    }
+
+@app.get("/chat-history")
+def get_chat_history():
+
+    chats = list(
+        chat_collection.find({}, {"_id": 0})
+    )
+
+    return {
+        "chat_history": chats
     }
