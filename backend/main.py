@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File
 import shutil
 import os
+import uuid
 from services.file_loader import extract_text
 from rag.chunker import chunk_text
 from rag.vector_store import *
@@ -78,7 +79,10 @@ async def upload_file(file: UploadFile = File(...)):
     }
 
 @app.post("/ask")
-def ask_question(question: str):
+def ask_question(question: str, session_id: str = None):
+
+    if session_id is None:
+        session_id = str(uuid.uuid4())
 
     db = Chroma(
         persist_directory="chroma_db",
@@ -94,22 +98,28 @@ def ask_question(question: str):
     answer = generate_answer(context, question)
 
     chat_collection.insert_one({
+         "session_id": session_id,
         "question": question,
         "answer": answer
     })
 
     return {
+        "session_id": session_id,
         "question": question,
         "answer": answer
     }
 
 @app.get("/chat-history")
-def get_chat_history():
+def get_chat_history(session_id: str):
 
     chats = list(
-        chat_collection.find({}, {"_id": 0})
+        chat_collection.find(
+            {"session_id": session_id},
+            {"_id": 0}
+        )
     )
 
     return {
+        "session_id": session_id,
         "chat_history": chats
     }
