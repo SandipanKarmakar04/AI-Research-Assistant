@@ -8,8 +8,10 @@ from rag.chunker import chunk_text
 from rag.vector_store import *
 from langchain_community.vectorstores import Chroma
 from services.llm_service import generate_answer
-from database import chat_collection
+from database import chat_collection, sessions_collection
 from pydantic import BaseModel
+from bson import ObjectId
+from datetime import datetime
 
 
 app = FastAPI()
@@ -131,6 +133,105 @@ def get_chat_history(session_id: str):
         "session_id": session_id,
         "chat_history": chats
     }
+
+@app.post("/sessions")
+def create_session():
+    session = {
+        "title": "New Chat",
+        "createdAt": datetime.utcnow()
+    }
+
+    result = sessions_collection.insert_one(session)
+
+    return {
+        "sessionId": str(result.inserted_id),
+        "title": session["title"]
+    }
+
+@app.get("/sessions")
+def get_sessions():
+
+    sessions = []
+
+    for s in sessions_collection.find().sort("createdAt", -1):
+        sessions.append({
+            "id": str(s["_id"]),
+            "title": s["title"],
+            "createdAt": s["createdAt"]
+        })
+
+    return sessions
+
+
+@app.get("/sessions/{session_id}/messages")
+def get_messages(session_id: str):
+
+    messages = chat_collection.find(
+        {"session_id": session_id}
+    )
+
+    result = []
+    for m in messages:
+        result.append({
+            "role": m["role"],
+            "content": m["content"]
+        })
+
+    return result
+
+@app.post("/chat")
+def chat(data: dict):
+
+    session_id = data["sessionId"]
+    user_message = data["message"]
+
+    # 🔥 update title if still "New Chat"
+    sessions_collection.update_one (
+        {
+            "id": ObjectId(session_id),
+            "title": "New Chat"
+        },
+        {
+            "$set": {
+            "title": user_message[:30]
+            }
+        }
+    )
+
+    # save user message
+    chat_collection.insert_one({
+        "session_id": session_id,
+        "role": "user",
+        "content": user_message,
+        "timestamp": datetime.utcnow()
+    })
+
+    # 🔥 STEP 1: get relevant context from vector DB
+    db = Chroma(
+        persist_directory="chroma_db",
+        embedding_function=embedding_model
+    )
+
+    results = db.similarity_search(user_message, k=3)
+
+    context = "\n".join([r.page_content for r in results])
+
+    # 🔥 STEP 2: REAL AI response
+    bot_reply = generate_answer(context, user_message)
+
+    # save assistant message
+    chat_collection.insert_one({
+        "session_id": session_id,
+        "role": "assistant",
+        "content": bot_reply,
+        "timestamp": datetime.utcnow()
+    })
+
+    return {
+        "reply": bot_reply
+    }
+
+
 
 app.add_middleware(
     CORSMiddleware,

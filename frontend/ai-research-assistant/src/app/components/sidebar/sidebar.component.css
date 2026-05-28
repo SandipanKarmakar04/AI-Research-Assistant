@@ -94,3 +94,9 @@
     background: var(--border);
     color: var(--text-light);
 }
+
+.chat-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

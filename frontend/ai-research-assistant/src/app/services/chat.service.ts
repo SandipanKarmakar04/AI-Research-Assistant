@@ -6,15 +6,27 @@ import { Injectable } from '@angular/core';
 })
 export class ChatService {
 
-  private apiUrl = 'http://127.0.0.1:8000/ask';
+  private apiUrl = 'http://127.0.0.1:8000';
 
-  constructor(private httpClient: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
-  askQuestion(question: string) {
-
-    return this.httpClient.post<any>(this.apiUrl, {
-      question: question
-    });
-
+  createSession() {
+    return this.http.post<any>(`${this.apiUrl}/sessions`, {});
   }
+
+  getSessions() {
+    return this.http.get<any[]>(`${this.apiUrl}/sessions`);
+  }
+
+  getMessages(sessionId: string) {
+    return this.http.get<any[]>(`${this.apiUrl}/sessions/${sessionId}/messages`);
+  }
+
+  sendMessage(sessionId: string, message: string) {
+    return this.http.post<any>(`${this.apiUrl}/chat`, {
+      sessionId,
+      message
+    });
+  }
+
 }

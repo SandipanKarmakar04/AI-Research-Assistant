@@ -1,8 +1,8 @@
 <div class="app-shell">
 
-  <app-sidebar></app-sidebar>
+  <app-sidebar (selectChat)="onSessionSelect($event)"></app-sidebar>
 
-  <app-chat></app-chat>
+  <app-chat [sessionId]="selectedSessionId"></app-chat>
 
   <app-upload></app-upload>
 

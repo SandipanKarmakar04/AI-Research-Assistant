@@ -19,4 +19,9 @@ export class UploadService {
     return this.httpClient.post<any>(this.apiUrl, formData);
 
   }
+  selectedSession: string = '';
+
+  onChatSelected(sessionId: string) {
+    this.selectedSession = sessionId;
+  }
 }
