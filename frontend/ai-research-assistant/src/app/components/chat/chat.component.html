@@ -1,0 +1,47 @@
+<!-- ── CHAT MAIN ── -->
+<main class="chat-main">
+    <header class="chat-header">
+        <h2 id="chatTitle">AI Research Assistant</h2>
+        <p>Ask anything from your documents</p>
+    </header>
+
+    <div class="message-list" id="messageList">
+        <!-- seeded messages-->
+        <!-- <div class="msg-row user">
+            <div class="msg-bubble user">Hello AI</div>
+        </div>
+        <div class="msg-row ai">
+            <div class="msg-bubble ai">Hello! I am ready to help you.</div>
+        </div>
+        <div class="msg-row user">
+            <div class="msg-bubble user">Explain RAG</div>
+        </div>
+
+        <div class="msg-row ai">
+            <div class="msg-bubble ai">RAG stands for <strong>Retrieval Augmented Generation</strong> — a technique that
+                combines a retrieval mechanism with a generative language model. Instead of relying solely on the
+                model's training data, RAG fetches relevant documents or passages from an external knowledge base, then
+                passes them as context to the model when generating a response. This produces more accurate, up-to-date,
+                and source-grounded answers.</div>
+        </div> -->
+        <div *ngFor="let msg of messages">
+
+            <div class="msg-row user" *ngIf="msg.role === 'user'">
+                <div class="msg-bubble user">{{ msg.text }}</div>
+            </div>
+
+            <div class="msg-row ai" *ngIf="msg.role === 'assistant'">
+                <div class="msg-bubble ai">{{ msg.text }}</div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer class="input-footer">
+        <div class="input-wrap">
+            <input class="msg-input" [(ngModel)]="userInput" (key.enter)="sendMessage()" id="msgInput" type="text" placeholder="Type your message…" autocomplete="off" />
+            <button class="btn-send" id="sendBtn" (click)="sendMessage()">Send</button>
+        </div>
+    </footer>
+
+</main>

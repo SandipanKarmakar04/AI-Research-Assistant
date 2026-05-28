@@ -1,0 +1,79 @@
+<!-- <div class="app-shell"> -->
+<!-- ── RIGHT SIDEBAR ── -->
+<aside class="sidebar-right">
+  <h3>Upload Documents</h3>
+
+
+
+  <p *ngIf="selectedFile">
+    Selected: {{ selectedFile.name }}
+  </p>
+
+  <p *ngIf="uploadMessage">
+    {{ uploadMessage }}
+  </p>
+  <div class="dropzone" id="dropzone">
+    <input class="select-file" accept=".pdf,.txt,.csv" type="file" (change)="onFileSelected($event)" />
+
+    <!-- <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round"
+        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+
+    </svg> -->
+    <p>Choose &amp; Select files here</p>
+  </div>
+
+  <button class="btn-upload" (click)="uploadFile()">Upload</button>
+  <p class="formats-note">Supported formats: PDF, TXT, CSV</p>
+
+  <div class="file-list" id="fileList">
+
+    <!-- <div class="file-item">
+      <div class="file-icon pdf">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <span class="file-name">data.pdf</span>
+      <button class="file-remove" aria-label="Remove file" onclick="removeFile(this)">✕</button>
+    </div> -->
+
+    <!-- <div class="file-item">
+      <div class="file-icon csv">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <span class="file-name">data.csv</span>
+      <button class="file-remove" aria-label="Remove file" onclick="removeFile(this)">✕</button>
+    </div> -->
+
+    <!-- <div class="file-item">
+      <div class="file-icon txt">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      </div>
+      <span class="file-name">data.txt</span>
+      <button class="file-remove" aria-label="Remove file" onclick="removeFile(this)">✕</button>
+    </div> -->
+
+    <div class="file-item" *ngFor="let file of uploadedFiles">
+      <div class="file-icon txt">
+        <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+        </svg>
+      </div>
+      <span class="file-name">
+        {{ file }}
+      </span>
+    </div>
+    
+
+  </div>
+</aside>
+<!-- </div> -->

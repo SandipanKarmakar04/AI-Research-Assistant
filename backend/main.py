@@ -1,4 +1,5 @@
 from fastapi import FastAPI, UploadFile, File
+from fastapi.middleware.cors import CORSMiddleware
 import shutil
 import os
 import uuid
@@ -8,6 +9,7 @@ from rag.vector_store import *
 from langchain_community.vectorstores import Chroma
 from services.llm_service import generate_answer
 from database import chat_collection
+from pydantic import BaseModel
 
 
 app = FastAPI()
@@ -77,9 +79,15 @@ async def upload_file(file: UploadFile = File(...)):
         "message": "PDF uploaded and text extracted successfully",
         "total_chunks": len(chunks)
     }
+class QuestionRequest(BaseModel):
+    question: str
+    session_id: str | None = None
 
 @app.post("/ask")
-def ask_question(question: str, session_id: str = None):
+def ask_question(data: QuestionRequest):
+    
+    question = data.question
+    session_id = data.session_id
 
     if session_id is None:
         session_id = str(uuid.uuid4())
@@ -123,3 +131,11 @@ def get_chat_history(session_id: str):
         "session_id": session_id,
         "chat_history": chats
     }
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
