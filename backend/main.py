@@ -33,8 +33,6 @@ def home():
         "message": "AI Research Assistant Backend Running"
     }
 
-from langchain_community.vectorstores import Chroma
-
 @app.get("/search")
 def search(query: str):
 
@@ -168,7 +166,7 @@ def get_messages(session_id: str):
 
     messages = chat_collection.find(
         {"session_id": session_id}
-    )
+    ).sort("timestamp",1)
 
     result = []
     for m in messages:
@@ -186,17 +184,17 @@ def chat(data: dict):
     user_message = data["message"]
 
     # 🔥 update title if still "New Chat"
-    sessions_collection.update_one (
-        {
-            "id": ObjectId(session_id),
-            "title": "New Chat"
-        },
-        {
-            "$set": {
-            "title": user_message[:30]
-            }
-        }
-    )
+    # sessions_collection.update_one (
+    #     {
+    #         "_id": ObjectId(session_id),
+    #         "title": "New Chat"
+    #     },
+    #     {
+    #         "$set": {
+    #         "title": user_message[:30]
+    #         }
+    #     }
+    # )
 
     # save user message
     chat_collection.insert_one({

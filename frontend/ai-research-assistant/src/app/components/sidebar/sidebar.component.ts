@@ -1,7 +1,6 @@
-import { Component, EventEmitter, Output, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, OnDestroy } from '@angular/core';
 import { ChatService } from '../../services/chat.service';
 import { CommonModule } from '@angular/common';
-
 
 @Component({
   selector: 'app-sidebar',
@@ -10,46 +9,39 @@ import { CommonModule } from '@angular/common';
   templateUrl: './sidebar.component.html',
   styleUrl: './sidebar.component.css'
 })
-export class SidebarComponent implements OnInit {
+export class SidebarComponent implements OnInit, OnDestroy {
 
   @Output() selectChat = new EventEmitter<string>();
   sessions: any[] = [];
 
-  constructor(private chatService: ChatService) { }
+  private sessionListener = () => this.loadSessions();
+
+  constructor(private chatService: ChatService) {}
 
   ngOnInit() {
     this.loadSessions();
+    window.addEventListener('session-created', this.sessionListener);
   }
 
-  // 🔵 Load sessions from backend
+  ngOnDestroy() {
+    window.removeEventListener('session-created', this.sessionListener);
+  }
+
   loadSessions() {
     this.chatService.getSessions().subscribe(res => {
-      this.sessions = res;
-
-      this.sessions.sort((a: any, b: any) =>
-      new Date(b.createdAt).getTime() -
-      new Date(a.createdAt).getTime()
-
-      
-    );
+      this.sessions = res.sort((a: any, b: any) =>
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      );
     });
   }
 
-  // 🟢 FIXED: Create new chat session
   newChat() {
-    this.chatService.createSession().subscribe(res => {
-
-      // refresh sidebar list
-      this.loadSessions();
-
-      // auto open new chat in main UI
-      this.selectChat.emit(res.sessionId);
-    });
+    localStorage.removeItem('currentSessionId');
+    this.selectChat.emit(null as any);
   }
 
-  // 🟡 Open existing chat
   openChat(id: string) {
-    console.log("CLICKED SESSION:", id);
+    localStorage.setItem('currentSessionId', id);
     this.selectChat.emit(id);
   }
 }

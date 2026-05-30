@@ -5,22 +5,37 @@
 
 
 
-  <p *ngIf="selectedFile" style="font-size: small; ">
-    {{ selectedFile.name }}
-  </p>
 
-  <p *ngIf="uploadMessage">
-    {{ uploadMessage }}
-  </p>
   <div class="dropzone" id="dropzone">
-    <input class="select-file" style="width: 91px;"
-      accept=".pdf,.txt,.csv" type="file" (change)="onFileSelected($event)" />
 
-    <!-- <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+    <!-- Hidden File Input -->
+    <input #fileInput type="file" accept=".pdf,.txt,.csv" (change)="onFileSelected($event)" hidden />
+
+    <!-- Upload Icon -->
+    <svg fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
       <path stroke-linecap="round" stroke-linejoin="round"
         d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-    </svg> -->
-    <p>or drop files here</p>
+    </svg>
+
+    <!-- File Text -->
+    <p class="drop-title">Choose your file here</p>
+    <!-- <p class="drop-subtitle">PDF, TXT, CSV supported</p> -->
+
+    <!-- Select File Button -->
+    <button class="btn-select" (click)="fileInput.click()">
+      Select File
+    </button>
+
+    <!-- Selected File -->
+    <p *ngIf="selectedFile" class="selected-file">
+      {{ selectedFile.name }}
+    </p>
+
+    <!-- Upload Message -->
+    <p *ngIf="uploadMessage" class="upload-message">
+      {{ uploadMessage }}
+    </p>
+
   </div>
 
   <button class="btn-upload" (click)="uploadFile()">Upload</button>
@@ -62,7 +77,11 @@
     </div> -->
 
     <div class="file-item" *ngFor="let file of uploadedFiles">
-      <div class="file-icon txt">
+      <div class="file-icon" [ngClass]="{
+    'pdf': file.endsWith('.pdf'),
+    'csv': file.endsWith('.csv'),
+    'txt': file.endsWith('.txt')
+  }">
         <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round"
             d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />

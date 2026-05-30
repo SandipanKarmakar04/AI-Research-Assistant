@@ -11,7 +11,7 @@ import { UploadService } from '../../services/upload.service';
 })
 export class UploadComponent {
 
-  selectedFile: any
+  selectedFile: File | null = null;
 
   constructor(private uploadService: UploadService) { }
 
@@ -27,13 +27,11 @@ export class UploadComponent {
 
     const allowedExtensions = ['pdf', 'txt', 'csv'];
 
-    const extension =
-      file.name.split('.').pop()?.toLowerCase();
+    const extension = file.name.split('.').pop()?.toLowerCase();
 
     if (!allowedExtensions.includes(extension!)) {
 
-      this.uploadMessage =
-        'Only PDF, TXT and CSV files allowed';
+      this.uploadMessage = 'Only PDF, TXT and CSV files allowed';
 
       return;
     }
@@ -46,29 +44,30 @@ export class UploadComponent {
 
     if (!this.selectedFile) return;
 
-    this.uploadService
-      .uploadFile(this.selectedFile)
-      .subscribe({
+    this.uploadService.uploadFile(this.selectedFile).subscribe({
+      next: (res) => {
+        this.uploadedFiles.unshift(
+          this.selectedFile!.name
+        );
 
-        next: (res) => {
-          this.uploadedFiles.push(
-            this.selectedFile!.name
-          );
+        this.uploadMessage = `${this.selectedFile?.name} uploaded successfully`;
+        setTimeout(() => {
+          this.selectedFile = null;
+          this.uploadMessage = '';
+        }, 4000);
 
-          this.uploadMessage = `${this.selectedFile?.name} uploaded successfully`;
+      },
 
-        },
+      error: (err) => {
+        this.uploadMessage = 'Upload failed';
+        setTimeout(() => {
+          this.selectedFile = null;
+          this.uploadMessage = '';
+        }, 3000);
+      }
 
-        error: (err) => {
-
-          this.uploadMessage = 'Upload failed';
-
-        }
-
-      });
+    });
 
   }
-
-
 
 }
