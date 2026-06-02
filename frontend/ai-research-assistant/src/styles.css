@@ -40,7 +40,11 @@ body {
   height: 100%;
   width: 100%;
   margin: 0;
-  /* background: var(--bg-root); */
+  background: var(--bg-root);
+  /* background-image: url("https://wall.alphacoders.com/big.php?i=426414"); */
+    background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   color: var(--text-main);
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;

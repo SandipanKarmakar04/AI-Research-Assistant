@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, OnInit, OnDestroy } from '@angular/core';
+import { Component, EventEmitter, Output, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { ChatService } from '../../services/chat.service';
 import { CommonModule } from '@angular/common';
 
@@ -13,12 +13,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   @Output() selectChat = new EventEmitter<string>();
   sessions: any[] = [];
+  activeSessionId: string | null = null;
 
   private sessionListener = () => this.loadSessions();
 
-  constructor(private chatService: ChatService) {}
+  constructor(private chatService: ChatService, private cdr: ChangeDetectorRef) {}
 
   ngOnInit() {
+    this.activeSessionId = localStorage.getItem('currentSessionId');
     this.loadSessions();
     window.addEventListener('session-created', this.sessionListener);
   }
@@ -42,6 +44,8 @@ export class SidebarComponent implements OnInit, OnDestroy {
 
   openChat(id: string) {
     localStorage.setItem('currentSessionId', id);
+    this.activeSessionId = id;
+    this.cdr.detectChanges();
     this.selectChat.emit(id);
   }
 }

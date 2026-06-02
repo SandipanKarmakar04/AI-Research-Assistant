@@ -17,26 +17,9 @@ export class AppComponent {
 
   constructor(private http: HttpClient) {}
 
-  // ngOnInit() {
-  //   this.createNewSession();
-  // }
-
-  // createNewSession() {
-  //   this.http.post<any>('http://127.0.0.1:8000/sessions', {})
-  //     .subscribe({
-  //       next: (res) => {
-  //         console.log("NEW SESSION CREATED:", res.sessionId);
-  //         this.selectedSessionId = res.sessionId;
-  //       },
-  //       error: (err) => {
-  //         console.error("SESSION CREATE FAILED:", err);
-  //       }
-  //     });
-  // }
-
 onSessionSelect(id: string | null) {
   console.log("SESSION SELECTED:", id);
-  this.selectedSessionId = id; // ✅ keep null as null
+  this.selectedSessionId = id;
 }
   
 }

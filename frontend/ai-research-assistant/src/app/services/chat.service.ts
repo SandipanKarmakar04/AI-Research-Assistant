@@ -23,10 +23,7 @@ export class ChatService {
   }
 
   sendMessage(sessionId: string, message: string) {
-    return this.http.post<any>(`${this.apiUrl}/chat`, {
-      sessionId,
-      message
-    });
+    return this.http.post<any>(`${this.apiUrl}/chat`, {sessionId, message});
   }
 
 }

@@ -106,7 +106,7 @@ def ask_question(data: QuestionRequest):
     answer = generate_answer(context, question)
 
     chat_collection.insert_one({
-         "session_id": session_id,
+        "session_id": session_id,
         "question": question,
         "answer": answer
     })
@@ -183,19 +183,6 @@ def chat(data: dict):
     session_id = data["sessionId"]
     user_message = data["message"]
 
-    # 🔥 update title if still "New Chat"
-    # sessions_collection.update_one (
-    #     {
-    #         "_id": ObjectId(session_id),
-    #         "title": "New Chat"
-    #     },
-    #     {
-    #         "$set": {
-    #         "title": user_message[:30]
-    #         }
-    #     }
-    # )
-
     # save user message
     chat_collection.insert_one({
         "session_id": session_id,
@@ -204,7 +191,6 @@ def chat(data: dict):
         "timestamp": datetime.utcnow()
     })
 
-    # 🔥 STEP 1: get relevant context from vector DB
     db = Chroma(
         persist_directory="chroma_db",
         embedding_function=embedding_model
@@ -214,7 +200,6 @@ def chat(data: dict):
 
     context = "\n".join([r.page_content for r in results])
 
-    # 🔥 STEP 2: REAL AI response
     bot_reply = generate_answer(context, user_message)
 
     # save assistant message

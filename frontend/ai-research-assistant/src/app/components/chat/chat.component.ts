@@ -18,28 +18,26 @@ export class ChatComponent implements OnInit, OnChanges {
   messages: any[] = [];
   userInput = '';
 
-  constructor(private chatService: ChatService) {}
+  constructor(private chatService: ChatService) { }
 
   ngOnInit() {
-    // ✅ FIX: don't restore from localStorage on refresh
-    // always start fresh — sessionId only comes from @Input
     localStorage.removeItem('currentSessionId');
   }
 
-ngOnChanges(changes: SimpleChanges) {
-  const change = changes['sessionId'];
+  ngOnChanges(changes: SimpleChanges) {
+    const change = changes['sessionId'];
 
-  if (!change || change.firstChange) return;
+    if (!change || change.firstChange) return;
 
-  if (!this.sessionId || this.sessionId === '') { // ✅ catch both null and ''
-    this.messages = [];
-    this.sessionId = null;
-    localStorage.removeItem('currentSessionId');
-    return;
+    if (!this.sessionId || this.sessionId === '') {
+      this.messages = [];
+      this.sessionId = null;
+      localStorage.removeItem('currentSessionId');
+      return;
+    }
+
+    this.loadMessages();
   }
-
-  this.loadMessages();
-}
 
   loadMessages() {
     if (!this.sessionId) return;

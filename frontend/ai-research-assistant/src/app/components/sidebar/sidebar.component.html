@@ -14,7 +14,7 @@
         <!-- <a href="#" data-chat="PDF Summary">PDF Summary</a>
             <a href="#" data-chat="Code Help">Code Help</a>
             <a href="#" data-chat="General Chat">General Chat</a> -->
-        <a *ngFor="let s of sessions" (click)="openChat(s.id)">
+        <a *ngFor="let s of sessions" (click)="openChat(s.id)" [class.active]="s.id === activeSessionId">
             {{ s.title }}
         </a>
     </nav>

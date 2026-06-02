@@ -63,7 +63,7 @@ export class UploadComponent {
         setTimeout(() => {
           this.selectedFile = null;
           this.uploadMessage = '';
-        }, 3000);
+        }, 4000);
       }
 
     });
